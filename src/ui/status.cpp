@@ -1,4 +1,5 @@
 #include "status.hpp"
+#include <ncurses.h>
 
 StatusBar::StatusBar(WINDOW* window) : window(window) {}
 
@@ -12,9 +13,12 @@ void StatusBar::clearMessage() {
 
 void StatusBar::draw() {
     werase(window);
+    int w = getmaxx(window);
 
     if (!message.empty())
         mvwprintw(window, 0, 1, "%s", message.c_str());
+
+    mvwprintw(window, 0, w - bindsStr.size(), "%s", bindsStr.c_str());
 
     wrefresh(window);
 }

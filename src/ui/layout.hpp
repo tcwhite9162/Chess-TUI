@@ -28,7 +28,7 @@ private:
     int term_rows = 0;
     int term_cols = 0;
 
-    void drawBorder(WINDOW* win, short color_pair, const std::string& title);
+    void drawBorder(WINDOW* win, short color_pair, const std::string& title, const std::string& extra="");
 
 };
 

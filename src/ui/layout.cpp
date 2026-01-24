@@ -32,7 +32,9 @@ void Layout::createWindows() {
     int board_x = 1;
 
     board_win = newwin(board_height, board_width, board_y, board_x);
-    drawBorder(board_win, 13, "Board");
+
+    std::string boardBinds = "H J K L ═ ← ↓ ↑ → ┗━┛ ⏎ or ␣ de/select";
+    drawBorder(board_win, 13, "Board", boardBinds);
 
     int moves_height = term_rows - 3;
     int moves_width  = term_cols - board_width - 6;
@@ -40,7 +42,9 @@ void Layout::createWindows() {
     int moves_x = board_x + board_width + 3;
 
     moves_win = newwin(moves_height, moves_width, moves_y, moves_x);
-    drawBorder(moves_win, 13, "Moves");
+
+    std::string moveBinds = " up down - scroll ";
+    drawBorder(moves_win, 13, "Moves", moveBinds);
 
     int status_height = 1;
     int status_width  = term_cols;
@@ -62,7 +66,7 @@ void Layout::destroyWindows() {
     if (status_win) { delwin(status_win); status_win = nullptr; }
 }
 
-void Layout::drawBorder(WINDOW* win, short color_pair, const std::string& title) {
+void Layout::drawBorder(WINDOW* win, short color_pair, const std::string& title, const std::string& extra) {
     int h, w;
     getmaxyx(win, h, w);
 
@@ -97,12 +101,24 @@ void Layout::drawBorder(WINDOW* win, short color_pair, const std::string& title)
     }
 
     if (!title.empty()) {
-        std::string title_new = "━━ " + title + " ━━";
+        std::string title_new = "┓ " + title + " ┏";
 
-        int start_x = 2;
+        int start_x = 4;
 
         wattron(win, COLOR_PAIR(color_pair));
         mvwprintw(win, 0, start_x, "%s", title_new.c_str());
+        wattroff(win, COLOR_PAIR(color_pair));
+    }
+
+    if (!extra.empty()) {
+        std::string extra_new = "┛ " + extra + " ┗";
+
+        int start_x = w - extra_new.length();
+        if (title == "Board")
+            start_x += 10;
+
+        wattron(win, COLOR_PAIR(color_pair));
+        mvwprintw(win, h - 1, start_x, "%s", extra_new.c_str());
         wattroff(win, COLOR_PAIR(color_pair));
     }
 }

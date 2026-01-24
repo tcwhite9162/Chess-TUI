@@ -1,5 +1,5 @@
 CXX = g++
-C_FLAGS = -std=c++20 -Wall -Wextra -O2
+C_FLAGS = -std=c++20 -Wall -Wextra -O2 -MMD -MP
 
 L_FLAGS = -lncurses -lncursesw
 
@@ -8,8 +8,8 @@ BUILD_DIR = build
 BIN = tui
 
 SRCS = $(shell find $(SRC_DIR) -name '*.cpp')
-
 OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
+DEPS = $(OBJS:.o=.d)
 
 all: $(BIN)
 
@@ -25,5 +25,7 @@ clean:
 
 run: $(BIN)
 	./$(BIN)
+
+-include $(DEPS)
 
 .PHONY: all clean run

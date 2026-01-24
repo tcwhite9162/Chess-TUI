@@ -1,6 +1,26 @@
 #include "boardview.hpp"
 #include "../app/config.hpp"
 #include <ncurses.h>
+//#include <iostream>
+
+static const char* pieceToString(Chess::Piece p) {
+    switch (p) {
+        case Chess::W_PAWN:   return "WP";
+        case Chess::W_KNIGHT: return "WN";
+        case Chess::W_BISHOP: return "WB";
+        case Chess::W_ROOK:   return "WR";
+        case Chess::W_QUEEN:  return "WQ";
+        case Chess::W_KING:   return "WK";
+
+        case Chess::B_PAWN:   return "BP";
+        case Chess::B_KNIGHT: return "BN";
+        case Chess::B_BISHOP: return "BB";
+        case Chess::B_ROOK:   return "BR";
+        case Chess::B_QUEEN:  return "BQ";
+        case Chess::B_KING:   return "BK";
+        default:      return "  "; // empty square
+    }
+}
 
 BoardView::BoardView(WINDOW* window) : window(window) {
     start_color();
@@ -10,11 +30,14 @@ BoardView::BoardView(WINDOW* window) : window(window) {
         init_color(10, 900, 900, 900); // light square
         init_color(11, 200, 200, 300); // dark square
         init_color(12, 300, 700, 800); // cursor
-        init_color(13, 100, 100, 200); // border
+        init_color(13, 800, 400, 200); // selected square
+        init_color(14, 0, 0, 0);          // black
+        init_color(15, 1000, 1000, 1000); // white
+
     }
 
-    init_pair(1, COLOR_BLACK, 10);
-    init_pair(2, COLOR_BLACK, 11);
+    init_pair(1, 14, 10);
+    init_pair(2, 15, 11);
     init_pair(3, COLOR_BLACK, 12);
     init_pair(4, COLOR_BLACK, 13);
 }
@@ -53,13 +76,21 @@ void BoardView::drawSquare(int row, int col) {
     const int y = row * SQUARE_HEIGHT + 2;
     const int x = col * SQUARE_WIDTH  + 3;
 
-    const bool is_dark = (row + col) % 2 == 1;
+    int boardRow = 7 - row;   // flip
+    int boardCol = col;
 
+    const bool is_dark = (row + col) % 2 == 1;
     const bool is_cursor = (row == cursor_row && col == cursor_col);
+
+    bool is_selected = false;
+    if (game)
+        is_selected = game->isSelected(boardRow, boardCol);
 
     int color_pair = 0;
     if (has_colors()) {
-        if (is_cursor)
+        if (is_selected)
+            color_pair = 4;
+        else if (is_cursor)
             color_pair = 3;
         else if (is_dark)
             color_pair = 2;
@@ -69,12 +100,17 @@ void BoardView::drawSquare(int row, int col) {
         wattron(window, COLOR_PAIR(color_pair));
     }
 
-    for (int dy = 0; dy < SQUARE_HEIGHT; dy++) {
-        for (int dx = 0; dx < SQUARE_WIDTH; dx++) {
+    for (int dy = 0; dy < SQUARE_HEIGHT; dy++)
+        for (int dx = 0; dx < SQUARE_WIDTH; dx++)
             mvwaddch(window, y+dy, x+dx, ' ');
-        }
-    }
 
-    if (has_colors())
-        wattroff(window, COLOR_PAIR(color_pair));
+    Chess::Piece p = game->pieceAt(boardRow, boardCol);
+    const char* label = pieceToString(p);
+
+    int text_y = y + SQUARE_HEIGHT / 2;
+    int text_x = x + (SQUARE_WIDTH - 2) / 2;
+
+    wattron(window, COLOR_PAIR(color_pair) | A_BOLD);
+    mvwprintw(window, text_y, text_x, "%s", label);
+    wattroff(window, COLOR_PAIR(color_pair) | A_BOLD);
 }

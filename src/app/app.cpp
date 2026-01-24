@@ -1,13 +1,18 @@
 #include "app.hpp"
+#include <memory>
 #include <ncurses.h>
 #include <string>
 
 App::App() {
-    board = new BoardView(layout.boardWindow());
-    moves = new MoveView(layout.movesWindow());
-    status = new StatusBar(layout.statusWindow());
+    board = std::make_unique<BoardView>(layout.boardWindow());
+    moves = std::make_unique<MoveView>(layout.movesWindow());
+    status = std::make_unique<StatusBar>(layout.statusWindow());
 
-    status->setMessage("hello");
+    board->setGameManager(&game);
+
+    std::string msg;
+    msg = std::to_string(cursor_row + 1)+ ", " + std::to_string(cursor_col + 1);
+    status->setMessage(msg);
 }
 
 void App::run() {
@@ -24,6 +29,7 @@ void App::run() {
 }
 
 void App::handleInput(int ch) {
+    std::string msg;
 
     switch (ch) {
         case 'k':
@@ -54,17 +60,20 @@ void App::handleInput(int ch) {
             moves->scrollDown();
             break;
 
-        default:
+        case '\n':
+        case ' ':
+            game.selectSquare(7-cursor_row, cursor_col);
             break;
     }
 
-    std::string msg = "Cursor: " + std::to_string(board->getCursorRow()) + ", " + std::to_string(board->getCursorCol());
+    msg = std::to_string(cursor_row + 1)+ ", " + std::to_string(cursor_col + 1);
     status->setMessage(msg);
 }
 
 void App::updateUI() {
     board->setCursor(cursor_row, cursor_col);
     board->draw();
+
     moves->draw();
     status->draw();
 }
