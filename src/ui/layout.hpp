@@ -16,8 +16,6 @@ public:
     WINDOW* movesWindow()  { return moves_win; }
     WINDOW* statusWindow() { return status_win; }
 
-private:
-
     void createWindows();
     void destroyWindows();
 
@@ -29,6 +27,7 @@ private:
     int term_cols = 0;
 
     void drawBorder(WINDOW* win, short color_pair, const std::string& title, const std::string& extra="");
+    void draw();
 
 };
 

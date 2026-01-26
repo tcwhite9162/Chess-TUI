@@ -27,19 +27,19 @@ BoardView::BoardView(WINDOW* window) : window(window) {
     use_default_colors();
 
     if (can_change_color()) {
-        init_color(10, 900, 900, 900); // light square
-        init_color(11, 200, 200, 300); // dark square
-        init_color(12, 300, 700, 800); // cursor
-        init_color(13, 800, 400, 200); // selected square
-        init_color(14, 0, 0, 0);          // black
-        init_color(15, 1000, 1000, 1000); // white
+        init_color(110, 900, 900, 900); // light square
+        init_color(111, 200, 200, 300); // dark square
+        init_color(112, 800, 700, 950); // cursor
+        init_color(113, 900, 600, 500); // selected square
+        init_color(114, 0, 0, 0);          // black
+        init_color(115, 1000, 1000, 1000); // white
 
     }
 
-    init_pair(1, 14, 10);
-    init_pair(2, 15, 11);
-    init_pair(3, COLOR_BLACK, 12);
-    init_pair(4, COLOR_BLACK, 13);
+    init_pair(1, 114, 110);
+    init_pair(2, 115, 111);
+    init_pair(3, COLOR_BLACK, 112);
+    init_pair(4, COLOR_BLACK, 113);
 }
 
 void BoardView::setCursor(int row, int col) {

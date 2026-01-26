@@ -16,6 +16,6 @@ private:
 
     WINDOW* window;
     std::string message;
-    std::string bindsStr = " ━━ q, quit ━━ ";
+    std::string bindsStr = " ━━ q, quit - t, themes━━ ";
 
 };

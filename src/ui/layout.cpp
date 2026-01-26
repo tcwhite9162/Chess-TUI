@@ -26,30 +26,30 @@ void Layout::resize() {
 
 void Layout::createWindows() {
 
-    int board_height = 8 * (SQUARE_HEIGHT) + 4;
-    int board_width  = 8 * (SQUARE_WIDTH)  + 6;
-    int board_y = (term_rows - board_height - SQUARE_HEIGHT) / 2;
-    int board_x = 1;
+    const int board_height = 8 * (SQUARE_HEIGHT) + 4;
+    const int board_width  = 8 * (SQUARE_WIDTH)  + 6;
+    const int board_y = (term_rows - board_height - SQUARE_HEIGHT) / 2;
+    const int board_x = 1;
 
     board_win = newwin(board_height, board_width, board_y, board_x);
 
-    std::string boardBinds = "H J K L ═ ← ↓ ↑ → ┗━┛ ⏎ or ␣ de/select";
+    const std::string boardBinds = "H J K L ═ ← ↓ ↑ → ┗━┛ ⏎ or ␣ de/select";
     drawBorder(board_win, 13, "Board", boardBinds);
 
-    int moves_height = term_rows - 3;
-    int moves_width  = term_cols - board_width - 6;
-    int moves_y = 1;
-    int moves_x = board_x + board_width + 3;
+    const int moves_height = term_rows - 3;
+    const int moves_width  = term_cols - board_width - 6;
+    const int moves_y = 1;
+    const int moves_x = board_x + board_width + 3;
 
     moves_win = newwin(moves_height, moves_width, moves_y, moves_x);
 
-    std::string moveBinds = " up down - scroll ";
+    const std::string moveBinds = " up down - scroll ";
     drawBorder(moves_win, 13, "Moves", moveBinds);
 
-    int status_height = 1;
-    int status_width  = term_cols;
-    int status_y = term_rows - 1;
-    int status_x = 0;
+    const int status_height = 1;
+    const int status_width  = term_cols;
+    const int status_y = term_rows - 1;
+    const int status_x = 0;
 
     status_win = newwin(status_height, status_width, status_y, status_x);
 
@@ -121,4 +121,10 @@ void Layout::drawBorder(WINDOW* win, short color_pair, const std::string& title,
         mvwprintw(win, h - 1, start_x, "%s", extra_new.c_str());
         wattroff(win, COLOR_PAIR(color_pair));
     }
+}
+
+void Layout::draw() {
+    drawBorder(board_win, 13, "Board", "H J K L ═ ← ↓ ↑ → ┗━┛ ⏎ or ␣ de/select");
+    drawBorder(moves_win, 13, "Moves", " up down - scroll ");
+    drawBorder(status_win, 13, "", "");
 }
