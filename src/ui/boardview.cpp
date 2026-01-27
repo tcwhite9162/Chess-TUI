@@ -33,6 +33,7 @@ BoardView::BoardView(WINDOW* window) : window(window) {
         init_color(113, 900, 600, 500); // selected square
         init_color(114, 0, 0, 0);          // black
         init_color(115, 1000, 1000, 1000); // white
+        init_color(215, 1000, 0, 1000); // legal move
 
     }
 
@@ -40,6 +41,7 @@ BoardView::BoardView(WINDOW* window) : window(window) {
     init_pair(2, 115, 111);
     init_pair(3, COLOR_BLACK, 112);
     init_pair(4, COLOR_BLACK, 113);
+    init_pair(14, COLOR_BLACK, 215);
 }
 
 void BoardView::setCursor(int row, int col) {
@@ -83,8 +85,11 @@ void BoardView::drawSquare(int row, int col) {
     const bool is_cursor = (row == cursor_row && col == cursor_col);
 
     bool is_selected = false;
-    if (game)
+    bool is_legal = false;
+    if (game) {
         is_selected = game->isSelected(boardRow, boardCol);
+        is_legal = game->isLegalSq(boardRow, boardCol);
+    }
 
     int color_pair = 0;
     if (has_colors()) {
@@ -113,4 +118,17 @@ void BoardView::drawSquare(int row, int col) {
     wattron(window, COLOR_PAIR(color_pair) | A_BOLD);
     mvwprintw(window, text_y, text_x, "%s", label);
     wattroff(window, COLOR_PAIR(color_pair) | A_BOLD);
+
+    // Draw legal move indicator (small dot)
+    if (is_legal && !is_selected) {
+        int dot_y = y + SQUARE_HEIGHT / 2;
+        int dot_x = x + SQUARE_WIDTH  / 2;
+
+        wattron(window, COLOR_PAIR(14) | A_BOLD);
+        mvwaddch(window, dot_y, dot_x, ' ');   // or ACS_BULLET
+        mvwaddch(window, dot_y, dot_x-1, ' ');   // or ACS_BULLET
+        mvwaddch(window, dot_y-1, dot_x, ' ');   // or ACS_BULLET
+        mvwaddch(window, dot_y-1, dot_x-1, ' ');   // or ACS_BULLET
+        wattroff(window, COLOR_PAIR(14) | A_BOLD);
+    }
 }

@@ -103,8 +103,16 @@ void GameManager::goToCurrPos() {
 
 void GameManager::updateLegalMoves() {
     legalMoves.clear();
-    // TODO
-    return;
+
+    std::vector<Move> allMoves;
+    board.generateLegalMoves(allMoves);
+
+    const int fromSq = selectionRow * 8 + selectionCol;
+
+    for (const Move& m : allMoves) {
+        if (m.from == fromSq)
+            legalMoves.emplace_back(m);
+    }
 }
 
 }

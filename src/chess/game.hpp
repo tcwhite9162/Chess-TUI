@@ -22,7 +22,7 @@ public:
         return hasSelection && selectionRow == r && selectionCol == c;
     }
 
-    [[nodiscard]] inline bool isLegalSq(const int row, const int col)  const;
+    [[nodiscard]] bool isLegalSq(const int row, const int col) const;
 
     [[nodiscard]] inline Color getTurn() const { return board.getTurn(); }
     [[nodiscard]] inline Piece pieceAt(const int row, const int col) const { return board.pieceAt(row, col); };
