@@ -34,10 +34,14 @@ enum Flag : int {
     NONE = 0,
     DOUBLE_PUSH  = 1 << 0,
     CAPTURE      = 1 << 1,
-    PROMOTION    = 1 << 2,
-    EN_PASSANT   = 1 << 3,
-    CASTLE_KING  = 1 << 4,
-    CASTLE_QUEEN = 1 << 5,
+    EN_PASSANT   = 1 << 2,
+    CASTLE_KING  = 1 << 3,
+    CASTLE_QUEEN = 1 << 4,
+    PROMOTION    = 1 << 5,
+    PROMOTION_KNIGHT = 1 << 6,
+    PROMOTION_BISHOP = 1 << 7,
+    PROMOTION_ROOK   = 1 << 8,
+    PROMOTION_QUEEN  = 1 << 9,
 };
 
 enum CastlingRights : int {

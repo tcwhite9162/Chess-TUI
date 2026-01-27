@@ -33,8 +33,6 @@ public:
     inline int getSelectedRow() const { return selectionRow; }
     inline int getSelectedCol() const { return selectionCol; }
 
-
-
     void undo();
     void redo();
     void goToStartPos();
