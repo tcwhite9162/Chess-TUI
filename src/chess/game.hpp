@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <vector>
 
 #include "constants.hpp"
@@ -37,6 +38,12 @@ public:
     void redo();
     void goToStartPos();
     void goToCurrPos();
+
+    std::string getUciPos() const;
+    Move parseUciMove(const std::string& uciMove) const;
+    void applyEngineMove(const std::string& uciMove);
+
+    [[nodiscard]] inline bool isEngineTurn() const { return board.getTurn() == BLACK; } // TODO: allow user to choose their side
 
 private:
     Board board;

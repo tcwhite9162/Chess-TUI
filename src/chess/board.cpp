@@ -343,10 +343,10 @@ void Board::genPawnMoves(std::vector<Move>& moves, const int sq) const {
     if (forwardOne >= 0 && forwardOne < 64 && pieceAt(forwardOne) == EMPTY) {
         int toRank = forwardOne / 8;
         if ((p == W_PAWN && toRank == 7) || (p == B_PAWN && toRank == 0)) {
-            moves.emplace_back(sq, forwardOne, EMPTY, PROMOTION | PROMOTION_KNIGHT);
-            moves.emplace_back(sq, forwardOne, EMPTY, PROMOTION | PROMOTION_BISHOP);
-            moves.emplace_back(sq, forwardOne, EMPTY, PROMOTION | PROMOTION_ROOK);
-            moves.emplace_back(sq, forwardOne, EMPTY, PROMOTION | PROMOTION_QUEEN);
+            moves.emplace_back(sq, forwardOne, p == W_PAWN ? W_KNIGHT : B_KNIGHT, PROMOTION | PROMOTION_KNIGHT);
+            moves.emplace_back(sq, forwardOne, p == W_PAWN ? W_BISHOP : B_BISHOP, PROMOTION | PROMOTION_BISHOP);
+            moves.emplace_back(sq, forwardOne, p == W_PAWN ? W_ROOK   : B_ROOK,   PROMOTION | PROMOTION_ROOK);
+            moves.emplace_back(sq, forwardOne, p == W_PAWN ? W_QUEEN  : B_QUEEN,  PROMOTION | PROMOTION_QUEEN);
         }
         else {
             moves.emplace_back(sq, forwardOne, EMPTY);
@@ -376,13 +376,13 @@ void Board::genPawnMoves(std::vector<Move>& moves, const int sq) const {
         if (target != EMPTY && isWhite(target) != (friendly == WHITE)) {
             const int capRank = capSq / 8;
             if ((p == W_PAWN && capRank == 7) || (p == B_PAWN && capRank == 0)) {
-                moves.emplace_back(sq, capSq, target, CAPTURE | PROMOTION | PROMOTION_KNIGHT);
-                moves.emplace_back(sq, capSq, target, CAPTURE | PROMOTION | PROMOTION_BISHOP);
-                moves.emplace_back(sq, capSq, target, CAPTURE | PROMOTION | PROMOTION_ROOK);
-                moves.emplace_back(sq, capSq, target, CAPTURE | PROMOTION | PROMOTION_QUEEN);
+                moves.emplace_back(sq, capSq, p == W_PAWN ? W_KNIGHT : B_KNIGHT, CAPTURE | PROMOTION | PROMOTION_KNIGHT);
+                moves.emplace_back(sq, capSq, p == W_PAWN ? W_BISHOP : B_BISHOP, CAPTURE | PROMOTION | PROMOTION_BISHOP);
+                moves.emplace_back(sq, capSq, p == W_PAWN ? W_ROOK   : B_ROOK,   CAPTURE | PROMOTION | PROMOTION_ROOK);
+                moves.emplace_back(sq, capSq, p == W_PAWN ? W_QUEEN  : B_QUEEN,  CAPTURE | PROMOTION | PROMOTION_QUEEN);
             }
             else {
-                moves.emplace_back(sq, capSq, target, CAPTURE);
+                moves.emplace_back(sq, capSq, EMPTY, CAPTURE);
             }
         }
         else if (capSq == enPassantSquare) {
@@ -408,8 +408,12 @@ void Board::genKnightMoves(std::vector<Move>& moves, const int sq) const {
             continue;
 
         Piece target = pieceAt(to);
-        if (target == EMPTY || isWhite(target) != (friendly == WHITE))
-            moves.emplace_back(sq, to, target);
+        if (target == EMPTY) {
+            moves.emplace_back(sq, to, EMPTY);
+        } else if (isWhite(target) != (friendly == WHITE)) {
+            moves.emplace_back(sq, to, EMPTY, CAPTURE);
+        }
+
     }
 }
 
@@ -448,7 +452,7 @@ void Board::genKingMoves(std::vector<Move>& moves, const int sq) const {
             moves.emplace_back(sq, target, EMPTY);
         }
         else if (isWhite(targetPiece) != (friendly == WHITE)) {
-            moves.emplace_back(sq, target, targetPiece, CAPTURE);
+            moves.emplace_back(sq, target, EMPTY, CAPTURE);
         }
     }
 
@@ -521,8 +525,9 @@ void Board::genSlidingMoves(std::vector<Move>& moves, const int sq, const int* d
                 moves.emplace_back(sq, to, EMPTY);
             }
             else {
-                if (isWhite(target) != (friendly == WHITE))
-                    moves.emplace_back(sq, to, target);
+                if (isWhite(target) != (friendly == WHITE)) {
+                    moves.emplace_back(sq, to, EMPTY, CAPTURE);
+                }
                 break;
             }
 
