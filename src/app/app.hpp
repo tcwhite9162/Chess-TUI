@@ -19,6 +19,7 @@ private:
     Layout layout;
     Chess::GameManager game;
 
+
     int cursor_row = 0;
     int cursor_col = 0;
 
