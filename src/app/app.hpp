@@ -1,24 +1,24 @@
 #pragma once
-#include <ncurses.h>
-#include <memory>
 
-#include "../ui/layout.hpp"
-#include "../ui/boardview.hpp"
-#include "../ui/moveview.hpp"
-#include "../ui/theme.hpp"
-#include "../ui/status.hpp"
+#include <memory>
+#include <ncurses.h>
+
 #include "../chess/game.hpp"
+#include "../ui/boardview.hpp"
+#include "../ui/layout.hpp"
+#include "../ui/moveview.hpp"
+#include "../ui/status.hpp"
+#include "../ui/theme.hpp"
 
 class App {
 
-public:
+  public:
     App();
     void run();
 
-private:
+  private:
     Layout layout;
     Chess::GameManager game;
-
 
     int cursor_row = 0;
     int cursor_col = 0;
@@ -32,5 +32,4 @@ private:
     void updateUI();
 
     bool running = true;
-
 };

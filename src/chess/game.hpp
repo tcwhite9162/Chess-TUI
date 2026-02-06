@@ -3,17 +3,15 @@
 #include <string>
 #include <vector>
 
+#include "board.hpp"
 #include "constants.hpp"
 #include "move.hpp"
-#include "board.hpp"
 
-namespace Chess 
-{
+namespace Chess {
 
-class GameManager
-{
+class GameManager {
 
-public:
+  public:
     GameManager();
 
     void selectSquare(const int cursorRow, const int cursorCol);
@@ -43,9 +41,11 @@ public:
     Move parseUciMove(const std::string& uciMove) const;
     void applyEngineMove(const std::string& uciMove);
 
-    [[nodiscard]] inline bool isEngineTurn() const { return board.getTurn() == BLACK; } // TODO: allow user to choose their side
+    [[nodiscard]] inline bool isEngineTurn() const { // TODO: allow user to choose their side
+        return board.getTurn() == BLACK;
+    }
 
-private:
+  private:
     Board board;
 
     bool hasSelection;
@@ -62,4 +62,4 @@ private:
     void updateLegalMoves();
 };
 
-}
+} // namespace Chess

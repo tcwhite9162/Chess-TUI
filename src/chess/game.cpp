@@ -2,21 +2,15 @@
 #include "board.hpp"
 #include "constants.hpp"
 
-namespace Chess
-{
+namespace Chess {
 
-GameManager::GameManager() :
-    hasSelection(false),
-    selectionRow(0),
-    selectionCol(0),
-    undoIndex(0)
-{
+GameManager::GameManager() : hasSelection(false), selectionRow(0), selectionCol(0), undoIndex(0) {
     board.reset();
 }
 
 void GameManager::selectSquare(const int cursorRow, const int cursorCol) {
 
-    if (hasSelection && cursorRow == selectionRow && cursorCol == selectionCol){
+    if (hasSelection && cursorRow == selectionRow && cursorCol == selectionCol) {
         hasSelection = false;
         return;
     }
@@ -135,7 +129,7 @@ Move GameManager::parseUciMove(const std::string& uciMove) const {
     const int fromRow = 7 - (uciMove[1] - '1');
 
     const int toCol = uciMove[2] - 'a';
-    const int toRow = 7  - (uciMove[3] - '1');
+    const int toRow = 7 - (uciMove[3] - '1');
 
     const int from = fromRow * 8 + fromCol;
     const int to   = toRow * 8 + toCol;
@@ -144,31 +138,31 @@ Move GameManager::parseUciMove(const std::string& uciMove) const {
     const bool isWhite = board.isWhite(moving);
 
     Piece promoPiece = EMPTY;
-    int flags = NONE;
+    int flags        = NONE;
 
     if (uciMove.size() == 5) { // promotion
         flags |= PROMOTION;
 
         switch (uciMove[4]) {
-            case 'n':
-                promoPiece = isWhite ? W_KNIGHT : B_KNIGHT;
-                flags |= PROMOTION_KNIGHT;
-                break;
+        case 'n':
+            promoPiece = isWhite ? W_KNIGHT : B_KNIGHT;
+            flags |= PROMOTION_KNIGHT;
+            break;
 
-            case 'b':
-                promoPiece = isWhite ? W_BISHOP : B_BISHOP;
-                flags |= PROMOTION_BISHOP;
-                break;
+        case 'b':
+            promoPiece = isWhite ? W_BISHOP : B_BISHOP;
+            flags |= PROMOTION_BISHOP;
+            break;
 
-            case 'r':
-                promoPiece = isWhite ? W_ROOK : B_ROOK;
-                flags |= PROMOTION_ROOK;
-                break;
+        case 'r':
+            promoPiece = isWhite ? W_ROOK : B_ROOK;
+            flags |= PROMOTION_ROOK;
+            break;
 
-            case 'q':
-                promoPiece = isWhite ? W_QUEEN : B_QUEEN;
-                flags |= PROMOTION_QUEEN;
-                break;
+        case 'q':
+            promoPiece = isWhite ? W_QUEEN : B_QUEEN;
+            flags |= PROMOTION_QUEEN;
+            break;
         }
     }
 
@@ -197,7 +191,7 @@ void GameManager::applyEngineMove(const std::string& uciMove) {
     if (undoIndex != (int)moveHistory.size())
         return;
 
-    Move m = parseUciMove(uciMove);
+    Move m      = parseUciMove(uciMove);
     UndoState u = board.makeMove(m);
 
     moveHistory.push_back(m);
@@ -210,4 +204,4 @@ void GameManager::applyEngineMove(const std::string& uciMove) {
     updateLegalMoves();
 }
 
-}
+} // namespace Chess

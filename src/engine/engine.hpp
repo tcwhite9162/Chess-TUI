@@ -1,16 +1,16 @@
 #pragma once
 
-#include <string>
-#include <optional>
-#include <thread>
 #include <mutex>
+#include <optional>
 #include <queue>
+#include <string>
+#include <thread>
 
 #include "../chess/board.hpp"
 
 class EngineInterface {
 
-public:
+  public:
     EngineInterface(const std::string& binPath);
     ~EngineInterface();
 
@@ -27,12 +27,12 @@ public:
     void setPosition(const std::string& uciPos);
     void setStartPosition();
 
-    void go(const int movetime=1000);
+    void go(const int movetime = 1000);
 
     std::optional<std::string> getBestMove();
     std::optional<std::string> pollRaw();
 
-private:
+  private:
     bool running = false;
     std::string binPath;
 

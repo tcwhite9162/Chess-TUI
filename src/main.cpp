@@ -3,7 +3,7 @@
 #include "app/app.hpp"
 
 int main() {
-    setlocale(LC_ALL, ""); // for utf 8 chars
+    setlocale(LC_ALL, ""); // for utf 8 chars (??)
     initscr();
     curs_set(0);
     start_color();

@@ -5,10 +5,11 @@
 #include <string>
 
 App::App() {
-    board = std::make_unique<BoardView>(layout.boardWindow());
-    moves = std::make_unique<MoveView>(layout.movesWindow());
+    board  = std::make_unique<BoardView>(layout.boardWindow());
+    moves  = std::make_unique<MoveView>(layout.movesWindow());
     status = std::make_unique<StatusBar>(layout.statusWindow());
-    themeManager  = std::make_unique<ThemeManager>(stdscr);
+
+    themeManager = std::make_unique<ThemeManager>(stdscr);
 
     board->setGameManager(&game);
 
@@ -18,16 +19,16 @@ App::App() {
 
     std::string msg;
     std::string to_move = (game.getTurn() == Chess::WHITE) ? "White to move" : "Black to move";
-    msg = std::to_string(cursor_row + 1)+ ", " + std::to_string(cursor_col + 1) + " --- " + to_move;
+
+    msg = std::to_string(cursor_row + 1) + ", " + std::to_string(cursor_col + 1) + " --- " + to_move;
     status->setMessage(msg);
 }
 
 void App::run() {
-    int ch;
-
     updateUI();
     doupdate();
 
+    int ch;
     while (running) {
 
         ch = getch();
@@ -46,56 +47,55 @@ void App::handleInput(int ch) {
             idx++;
             // TODO: applyTheme(idx);
         }
-
         return;
     }
 
     std::string msg;
     switch (ch) {
-        case 't':
-            themeManager->toggle();
-            return;
+    case 't':
+        themeManager->toggle();
+        return;
 
-        case 'q':
-            running = false;
-            break;
+    case 'q':
+        running = false;
+        break;
 
-        case 'k':
-            if (cursor_row > 0) 
-                cursor_row--;
-            break;
+    case 'k':
+        if (cursor_row > 0)
+            cursor_row--;
+        break;
 
-        case 'j':
-            if (cursor_row < 7)
-                cursor_row++;
-            break;
+    case 'j':
+        if (cursor_row < 7)
+            cursor_row++;
+        break;
 
-        case 'h':
-            if (cursor_col > 0)
-                cursor_col--;
-            break;
+    case 'h':
+        if (cursor_col > 0)
+            cursor_col--;
+        break;
 
-        case 'l':
-            if (cursor_col < 7)
-                cursor_col++;
-            break;
+    case 'l':
+        if (cursor_col < 7)
+            cursor_col++;
+        break;
 
-        case KEY_UP:
-            moves->scrollUp();
-            break;
+    case KEY_UP:
+        moves->scrollUp();
+        break;
 
-        case KEY_DOWN:
-            moves->scrollDown();
-            break;
+    case KEY_DOWN:
+        moves->scrollDown();
+        break;
 
-        case '\n':
-        case ' ':
-            game.selectSquare(7-cursor_row, cursor_col);
-            break;
+    case '\n':
+    case ' ':
+        game.selectSquare(7 - cursor_row, cursor_col);
+        break;
     }
 
     std::string to_move = (game.getTurn() == Chess::WHITE) ? "White to move" : "Black to move";
-    msg = std::to_string(cursor_row + 1)+ ", " + std::to_string(cursor_col + 1) + " --- " + to_move;
+    msg                 = std::to_string(cursor_row + 1) + ", " + std::to_string(cursor_col + 1) + " --- " + to_move;
     status->setMessage(msg);
 }
 

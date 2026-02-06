@@ -4,16 +4,14 @@
 #include <iostream>
 #include <thread>
 #include <unistd.h>
-// yo
+
 int main() {
-    EngineInterface engine("/usr/bin/stockfish");
+    EngineInterface engine("../Chess/build/main");
 
     if (!engine.start()) {
         std::cerr << "Failed to start engine\n";
         return 1;
     }
-
-    std::cout << "Engine started\n\n";
 
     engine.sendUci();
     std::cout << "sent: 'uci'\n";
@@ -34,19 +32,17 @@ int main() {
     engine.sendIsReady();
     std::cout << "sent: 'isready'\n";
 
-    bool readyOK = false;
-    while (!readyOK) {
+    engine.setStartPosition();
+    std::cout << "sent: 'position startpos'\n" << std::endl;
+    bool pos = false;
+    while (!pos) {
         auto msg = engine.pollRaw();
         if (msg.has_value()) {
             std::cout << "ENGINE: " << msg.value() << std::endl;
-            if (msg.value() == "readyok")
-                readyOK = true;
+            pos = true;
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
-    std::cout << std::endl;
 
-    engine.setStartPosition();
     engine.go();
     std::cout << "sent: 'go'\n";
 

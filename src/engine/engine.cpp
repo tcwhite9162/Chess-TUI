@@ -1,15 +1,14 @@
 #include "engine.hpp"
 
 #include <cstring>
+#include <fcntl.h>
 #include <mutex>
 #include <optional>
-#include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <fcntl.h>
+#include <unistd.h>
 
-EngineInterface::EngineInterface(const std::string& binPath)
-    : in_fd(-1), out_fd(-1), pid(-1), binPath(binPath) {}
+EngineInterface::EngineInterface(const std::string& binPath) : in_fd(-1), out_fd(-1), pid(-1), binPath(binPath) {}
 
 EngineInterface::~EngineInterface() {
     stop();
@@ -33,8 +32,8 @@ bool EngineInterface::start() {
         return false;
     }
 
+    // child //
     if (pid == 0) {
-        // child //
         // redirect stdin
         dup2(toEngine[0], STDIN_FILENO);
         close(toEngine[0]);
@@ -57,14 +56,14 @@ bool EngineInterface::start() {
     close(toEngine[0]);
     close(fromEngine[1]);
 
-    in_fd = toEngine[1];
+    in_fd  = toEngine[1];
     out_fd = fromEngine[0];
 
     // make read non blocking
     fcntl(out_fd, F_SETFL, O_NONBLOCK);
 
     running = true;
-    reader = std::thread(&EngineInterface::readerLoop, this);
+    reader  = std::thread(&EngineInterface::readerLoop, this);
 
     return true;
 }
@@ -77,7 +76,6 @@ void EngineInterface::stop() {
 
     write(in_fd, "quit\n", 5);
 
-    // wait for child to end
     waitpid(pid, nullptr, 0);
 
     close(in_fd);
@@ -147,7 +145,7 @@ void EngineInterface::setPosition(const Chess::Board& board) {
 
 void EngineInterface::setPosition(const std::string& uciPos) {
     const std::string cmd = uciPos + "\n";
-    write(in_fd, cmd.c_str(), cmd.size()); 
+    write(in_fd, cmd.c_str(), cmd.size());
 }
 
 void EngineInterface::setStartPosition() {
@@ -155,8 +153,9 @@ void EngineInterface::setStartPosition() {
     write(in_fd, cmd, strlen(cmd));
 }
 
-void EngineInterface::go(const int movetime)  {
-    const std::string cmd = "go movetime " + std::to_string(movetime) + "\n";
+void EngineInterface::go(const int movetime) {
+    // const std::string cmd = "go movetime " + std::to_string(movetime) + "\n";
+    const std::string cmd = "go depth 6\n";
     write(in_fd, cmd.c_str(), cmd.size());
 }
 

@@ -1,5 +1,5 @@
-#include "../app/config.hpp"
 #include "layout.hpp"
+#include "../app/config.hpp"
 
 Layout::Layout() {
     getmaxyx(stdscr, term_rows, term_cols);
@@ -27,7 +27,8 @@ void Layout::resize() {
 void Layout::createWindows() {
 
     const int board_height = 8 * (SQUARE_HEIGHT) + 4;
-    const int board_width  = 8 * (SQUARE_WIDTH)  + 6;
+    const int board_width  = 8 * (SQUARE_WIDTH) + 6;
+
     const int board_y = (term_rows - board_height - SQUARE_HEIGHT) / 2;
     const int board_x = 1;
 
@@ -38,6 +39,7 @@ void Layout::createWindows() {
 
     const int moves_height = term_rows - 3;
     const int moves_width  = term_cols - board_width - 6;
+
     const int moves_y = 1;
     const int moves_x = board_x + board_width + 3;
 
@@ -48,8 +50,8 @@ void Layout::createWindows() {
 
     const int status_height = 1;
     const int status_width  = term_cols;
-    const int status_y = term_rows - 1;
-    const int status_x = 0;
+    const int status_y      = term_rows - 1;
+    const int status_x      = 0;
 
     status_win = newwin(status_height, status_width, status_y, status_x);
 
@@ -59,11 +61,20 @@ void Layout::createWindows() {
 }
 
 void Layout::destroyWindows() {
-    if (board_win) { delwin(board_win); board_win = nullptr; }
+    if (board_win) {
+        delwin(board_win);
+        board_win = nullptr;
+    }
 
-    if (moves_win) { delwin(moves_win); moves_win = nullptr; }
+    if (moves_win) {
+        delwin(moves_win);
+        moves_win = nullptr;
+    }
 
-    if (status_win) { delwin(status_win); status_win = nullptr; }
+    if (status_win) {
+        delwin(status_win);
+        status_win = nullptr;
+    }
 }
 
 void Layout::drawBorder(WINDOW* win, short color_pair, const std::string& title, const std::string& extra) {
@@ -79,24 +90,24 @@ void Layout::drawBorder(WINDOW* win, short color_pair, const std::string& title,
     setcchar(&ch_bl, L"┗", 0, color_pair, nullptr);
     setcchar(&ch_br, L"┛", 0, color_pair, nullptr);
 
-    setcchar(&ch_h,  L"━", 0, color_pair, nullptr);
-    setcchar(&ch_v,  L"┃", 0, color_pair, nullptr);
+    setcchar(&ch_h, L"━", 0, color_pair, nullptr);
+    setcchar(&ch_v, L"┃", 0, color_pair, nullptr);
 
     // Draw corners
-    mvwadd_wch(win, 0,     0,     &ch_tl);
-    mvwadd_wch(win, 0,     w - 1, &ch_tr);
-    mvwadd_wch(win, h - 1, 0,     &ch_bl);
+    mvwadd_wch(win, 0, 0, &ch_tl);
+    mvwadd_wch(win, 0, w - 1, &ch_tr);
+    mvwadd_wch(win, h - 1, 0, &ch_bl);
     mvwadd_wch(win, h - 1, w - 1, &ch_br);
 
     // Draw top and bottom edges
     for (int x = 1; x < w - 1; x++) {
-        mvwadd_wch(win, 0,     x, &ch_h);
+        mvwadd_wch(win, 0, x, &ch_h);
         mvwadd_wch(win, h - 1, x, &ch_h);
     }
 
     // Draw left and right edges
     for (int y = 1; y < h - 1; y++) {
-        mvwadd_wch(win, y, 0,     &ch_v);
+        mvwadd_wch(win, y, 0, &ch_v);
         mvwadd_wch(win, y, w - 1, &ch_v);
     }
 
